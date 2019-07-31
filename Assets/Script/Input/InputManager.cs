@@ -17,6 +17,8 @@ public class InputManager : MonoBehaviour
 
     public bool enablePlayer = true;
 
+    private bool grenadeMode = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,7 +45,9 @@ public class InputManager : MonoBehaviour
             playerController.CameraRotate(hMouse, vMouse);
         }
 
+        //玩家和坦克的射击
         waitingTime += Time.deltaTime;
+        playerAnimation.Shoot(false);
         if (Input.GetButtonDown("Fire1"))
         {
             if(isOnTank)
@@ -53,22 +57,36 @@ public class InputManager : MonoBehaviour
             }
             else
             {
-                playerShoot.Shoot();
-                playerAnimation.Shoot();
+                Debug.Log("Fire1");
+                if (!grenadeMode)
+                    playerShoot.Shoot();
+                else
+                    playerShoot.ThrowGrenade();
+                
             }
         }
 
-        //if(Input.GetKeyDown(KeyCode.T) && !isOtherPlayerOnTank && !isOnTank)
-        //{
-        //    playerController.PlayerGetOnTank();
-        //    isOnTank = true;
-        //}
-        //else if(Input.GetKeyDown(KeyCode.F))
-        //{
-        //    playerTankController.PlayerGetOffTank();
-        //    isOnTank = false;
-        //}
+        //玩家换弹夹
+        playerAnimation.Reload(false);
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            playerShoot.ChangeClip();
+        }
 
+        //玩家换枪
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            playerShoot.ChangeGun();
+            playerAnimation.ChangeGun();
+        }
+
+        //玩家扔手雷
+        if(Input.GetKeyDown(KeyCode.G))
+        {
+            grenadeMode = !grenadeMode;
+        }
+
+        //玩家上下坦克
         if(Input.GetKeyDown(KeyCode.T))
         {
             if(isOnTank)
@@ -82,7 +100,6 @@ public class InputManager : MonoBehaviour
                 {
                     playerController.PlayerGetOnTank();
                     isOnTank = true;
-                    //isOtherPlayerOnTank = true;
                 }
                 
             }
@@ -93,6 +110,7 @@ public class InputManager : MonoBehaviour
             //Debug.Log("Jump");
             isJump = true;
         }
+
 
         //锁定鼠标
         Cursor.lockState = CursorLockMode.Locked;

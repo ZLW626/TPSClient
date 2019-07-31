@@ -76,6 +76,7 @@ public class LoginOrRegister : MonoBehaviour
         {
             Debug.Log("login successfully!");
             loginPanel.SetActive(false);
+            PlayerPrefs.SetString("name", username);
             PlayerPrefs.SetInt("hp", msgConfirm.hp);
             PlayerPrefs.SetInt("money", msgConfirm.money);
             PlayerPrefs.SetInt("ammo", msgConfirm.ammo);

@@ -25,7 +25,12 @@ public class EnemyController : MonoBehaviour
     {
         //timer += Time.deltaTime;
         //if(timer >= requestInterval)
-        if(IsSamePoint(transform.position, targetPos))
+        EnemeyMove();
+    }
+
+    void EnemeyMove()
+    {
+        if (IsSamePoint(transform.position, targetPos))
         {
             MsgCSAskForEnemyPosition msgAsk = new MsgCSAskForEnemyPosition(enemyID);
             byte[] msgPacked = msgAsk.Marshal();
@@ -34,17 +39,13 @@ public class EnemyController : MonoBehaviour
             byte[] dataReceivedNoHead = SocketClient.RemoveDataHead();
             MsgSCEnemyPosition msgEnemyPosition = (MsgSCEnemyPosition)
                 (new UnifromUnmarshal().Unmarshal(dataReceivedNoHead));
-            
+
             targetPos.x = msgEnemyPosition.x;
             targetPos.z = msgEnemyPosition.z;
         }
 
         transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
-    }
-
-    void EnemeyMove()
-    {
-
+        transform.forward = (targetPos - transform.position).normalized;
     }
 
     void AskForPath()

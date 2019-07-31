@@ -6,7 +6,7 @@ public class PlayerAnimation : MonoBehaviour
 {
     private PlayerController playerController;
     private Animator playerAnimator;
-    private int[] weaponID = { 0, 1 };
+    //private int[] weaponID = { 0, 1 };
     private int currWeaponID = 0;
     // Start is called before the first frame update
     void Start()
@@ -41,23 +41,35 @@ public class PlayerAnimation : MonoBehaviour
         ////Debug.Log("v" + playerController.v);
         ////Debug.Log("h" + playerController.h);
 
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            playerAnimator.SetTrigger("switchWeapon");
-            currWeaponID = (currWeaponID + 1) % 2;
-            playerAnimator.SetInteger("gunFlag", currWeaponID);
-        }
-        if (Input.GetKeyDown(KeyCode.R))
-            playerAnimator.SetTrigger("reload");
+        //if (Input.GetKeyDown(KeyCode.E))
+        //{
+        //    playerAnimator.SetTrigger("switchWeapon");
+        //    currWeaponID = (currWeaponID + 1) % 2;
+        //    playerAnimator.SetInteger("gunFlag", currWeaponID);
+        //}
+        //if (Input.GetKeyDown(KeyCode.R))
+        //    playerAnimator.SetTrigger("reload");
         if (Input.GetKeyDown(KeyCode.G))
             playerAnimator.SetBool("grenadeMode", !playerAnimator.GetBool("grenadeMode"));
-        if (Input.GetButton("Fire1"))
-            playerAnimator.SetTrigger("gunShoot");
+        //if (Input.GetButton("Fire1"))
+        //    playerAnimator.SetTrigger("gunShoot");
     }
 
-    public void Shoot()
+    public void Shoot(bool gunShoot)
     {
-        playerAnimator.SetTrigger("gunShoot");
+        playerAnimator.SetBool("gunShoot", gunShoot);
+    }
+
+    public void Reload(bool reload)
+    {
+        playerAnimator.SetBool("reload", reload);
+    }
+
+    public void ChangeGun()
+    {
+        playerAnimator.SetTrigger("switchWeapon");
+        
+        playerAnimator.SetInteger("gunFlag", ++currWeaponID % 2);
     }
 
     public void Move(float h, float v, bool run)
@@ -66,7 +78,7 @@ public class PlayerAnimation : MonoBehaviour
         if (!run)
             adjustRunWalk *= .5f;
         playerAnimator.SetFloat("speedV", v * adjustRunWalk);
-        if (playerController.v < 0)
+        if (v < 0)
             playerAnimator.SetFloat("speedH", -h * adjustRunWalk);
         else
             playerAnimator.SetFloat("speedH", h * adjustRunWalk);

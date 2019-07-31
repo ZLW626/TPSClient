@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float mouseSensitivity = .5f;
     [SerializeField] private float smoothTime = 18f;
     [SerializeField] private float camVerticalRotThresh = 0.8f; //旋转范围
-    [SerializeField] private float camVerticalRotMargin = 0.05f;//相机反向旋转的弧度大小, 此值应尽量小,防止相机抖动
+    [SerializeField] private float camVerticalRotMargin = 0.1f;//相机反向旋转的弧度大小, 此值应尽量小,防止相机抖动
     [SerializeField] private float speedAdjust = 1.5f;
 
     //玩家和相机的需要旋转的角度
@@ -31,12 +31,17 @@ public class PlayerController : MonoBehaviour
     private bool isInAir;
     private float jumpForce = 60f;
 
-    
+    //玩家姓名
+    public string playerName;
+
+    //
+    float speedDriven = 1.5f;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        
         targetRotationPlayer = transform.localRotation;
         camTrans = GameObject.Find("Main Camera").transform;
         targetRotationCamera = camTrans.localRotation;
@@ -175,6 +180,12 @@ public class PlayerController : MonoBehaviour
             return false;
         else
             return true;
+    }
+
+    public void PlayerMoveDrivenByServer(float x, float z)
+    {
+        Vector3 targetPos = new Vector3(x, transform.position.y, z);
+        transform.position = Vector3.MoveTowards(transform.position, targetPos, speedDriven * Time.deltaTime);
     }
 
     

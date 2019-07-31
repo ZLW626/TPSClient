@@ -19,6 +19,7 @@ public class HealthBarController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        currHpVal = 100;
         slider.value = 1f;
         hpBarBkg.fillAmount = slider.value;
         hpValText.text = "HP: " + maxHpVal;
@@ -44,12 +45,14 @@ public class HealthBarController : MonoBehaviour
 
     public void UpdateValue(int delta)
     {
+        Debug.Log(currHpVal);
+        Debug.Log(delta);
         currHpVal -= delta;
         if (currHpVal > maxHpVal)
             currHpVal = maxHpVal;
         else if (currHpVal < 0)
             currHpVal = 0;
-
+        Debug.Log(currHpVal);
         slider.value = currHpVal / (float)maxHpVal;
         hpBarBkg.fillAmount = slider.value;
         hpValText.text = "HP: " + currHpVal.ToString();

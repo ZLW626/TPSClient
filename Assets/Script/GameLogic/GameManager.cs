@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     private int currRound = 1;
     private int countdown = 10;
     [SerializeField] private EnemyManager enemyManager;
+    [SerializeField] private OtherPlayerManager otherPlayerManager;
+
     [SerializeField] private Text roundNumText;
     [SerializeField] private Text countdownText;
     [SerializeField] private InputManager inputManager;
@@ -18,7 +20,9 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         enemyManager = GameObject.Find("EnemyManager").GetComponent<EnemyManager>();
-        //enemyManager.InitializeEnemies(currRound);
+
+        //otherPlayerManager.InitializeOtherPlayers();
+
 
         StartCoroutine(RoundLoop());
     }
@@ -51,6 +55,7 @@ public class GameManager : MonoBehaviour
 
         //激活玩家
         inputManager.enablePlayer = true;
+
 
         //当场景还有敌人存在就一直进行下去
         while (!Input.GetKeyDown(KeyCode.E))

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class ShellController : MonoBehaviour
 {
-    [SerializeField] private LayerMask fireableLayer;
-    [SerializeField] private float explodeRadius;
+    private LayerMask shootableLayer;
+    private float explodeRadius = 5f;
     private ParticleSystem explodeParticles;
 
     // Start is called before the first frame update
@@ -13,6 +13,7 @@ public class ShellController : MonoBehaviour
     {
         Destroy(gameObject, 2f);
         explodeParticles = GameObject.Find("ShellExplosion").GetComponent<ParticleSystem>();
+        shootableLayer = LayerMask.GetMask("Shootable");
     }
 
     // Update is called once per frame
@@ -23,18 +24,21 @@ public class ShellController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //Collider[] colliders = Physics.OverlapSphere(
-        //    transform.position,
-        //    explodeRadius,
-        //    fireableLayer);
-        //for(int i = 0;i < colliders.Length;++i)
-        //{
-        //    Rigidbody currRigibody = colliders[i].GetComponent<Rigidbody>();
-        //    if (!currRigibody)
-        //        continue;
+        Collider[] colliders = Physics.OverlapSphere(
+            transform.position,
+            explodeRadius,
+            shootableLayer);
+        for (int i = 0; i < colliders.Length; ++i)
+        {
+            EnemyHealth currEnemyHealth = colliders[i].GetComponent<EnemyHealth>();
+            //Rigidbody currRigibody = colliders[i].GetComponent<Rigidbody>();
+            if (!currEnemyHealth)
+                continue;
+            int damage = 20;
+            currEnemyHealth.TakeDamage(damage);
+            Debug.Log("shell");
 
-
-        //}
+        }
         explodeParticles.transform.position  = transform.position;
         explodeParticles.Play();
         //Destroy(explodeParticles.gameObject, explodeParticles.main.duration);

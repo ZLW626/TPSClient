@@ -13,15 +13,32 @@ public class PlayerStatusBarController : MonoBehaviour
     [SerializeField] private Image hpImage;
     [SerializeField] private Text hpText;
     private float maxHpVal = 100;
+    public int clipStorage = 20;
+
+    public int money;
+    public int ammo;
+    public int currClip;
+    public int grenade;
+    public int shell;
+    public int hp;
 
     // Start is called before the first frame update
     void Start()
     {
-        moneyText.text = PlayerPrefs.GetInt("money").ToString();
-        ammoText.text = PlayerPrefs.GetInt("money").ToString();
-        grenadeText.text = PlayerPrefs.GetInt("grenade").ToString();
-        shellText.text = PlayerPrefs.GetInt("shell").ToString();
-        int hp = PlayerPrefs.GetInt("hp");
+        money = PlayerPrefs.GetInt("money");
+        moneyText.text = money.ToString();
+
+        ammo = PlayerPrefs.GetInt("ammo"); // ammo + currClip = 总的子弹数
+        currClip = ammo % clipStorage;
+        ammoText.text = currClip.ToString() + " \\ " + ammo.ToString();
+
+        grenade = PlayerPrefs.GetInt("grenade");
+        grenadeText.text = grenade.ToString();
+
+        shell = PlayerPrefs.GetInt("shell");
+        shellText.text = shell.ToString();
+
+        hp = PlayerPrefs.GetInt("hp");
         slider.value = hp / maxHpVal;
         hpImage.fillAmount = slider.value;
         hpText.text = hp.ToString();
@@ -33,14 +50,15 @@ public class PlayerStatusBarController : MonoBehaviour
         
     }
 
-    public void SetMoneyText(int val)
+    public void UpdateMoneyText()
     {
-        moneyText.text = val.ToString();
+        moneyText.text = money.ToString();
     }
-    public void SetAmmoText(int val)
+    public void UpdateAmmoText()
     {
+        ammoText.text = currClip.ToString() + " \\ " + ammo.ToString();
+    }
 
-    }
     public void SetGrenadeText(int val)
     {
 

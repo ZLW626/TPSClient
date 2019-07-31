@@ -22,5 +22,7 @@ public class MessageManager : MonoBehaviour
     void ProcessMessage()
     {
         byte[] dataReceivedNoHead = SocketClient.RemoveDataHead();
+
+        
     }
 }

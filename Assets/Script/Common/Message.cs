@@ -194,6 +194,17 @@ namespace Assets.Script.Common
         }
     }
 
+    public class MsgCSAskForOtherPlayer: MsgCSBase
+    {
+        public MsgCSAskForOtherPlayer()
+        {
+            sid_cid = Conf.MSG_CS_ASK_FOR_OTHER_PLAYER;
+            int dataLen = Conf.NET_HEAD_LENGTH_SIZE + Conf.NET_SID_CID_LENGTH_SIZE + sizeof(int);
+            appendParamInt(dataLen);
+            appendParamInt(1);
+        }
+    }
+
     public class MsgSCBase
     {
         public int sid;
@@ -242,16 +253,7 @@ namespace Assets.Script.Common
             enemies = new List<EnemyData>(enemyNum);
             int strLen = binaryReader.ReadInt32();
             //敌人信息被转化为字符串进行传输, 这里接收的是字符串
-            //char[] enemyDataChars = new char[strLen];
-            //Debug.Log(binaryReader.ReadChar());
-            //Debug.Log(binaryReader.ReadChar());
-            //for(int i = 0;i < strLen;++i)
-            //{
-            //    enemyDataChars[i] = binaryReader.ReadChar();
-            //    Debug.Log(enemyDataChars[i]);
-            //}
-            //Debug.Log(new string(enemyDataChars));
-            //string enemyDataStr = enemyDataChars.ToString();
+
             string enemyDataStr = new string(binaryReader.ReadChars(strLen));
             string[] enemyDataList = Regex.Split(enemyDataStr, "#");
             Debug.Log(enemyDataList);
@@ -286,6 +288,55 @@ namespace Assets.Script.Common
 
             return this;
 
+        }
+    }
+
+    public class MsgSCBroadcastPlayerPosition: MsgSCBase
+    {
+        public string playerName;
+        public float x;
+        public float z;
+
+        public MsgSCBroadcastPlayerPosition Unmarshal(byte[] bytes)
+        {
+            memoryStream = new MemoryStream(bytes);
+            binaryReader = new BinaryReader(memoryStream);
+            short sid_cid = binaryReader.ReadInt16();
+            int nameLen = binaryReader.ReadInt32();
+            playerName = new string(binaryReader.ReadChars(nameLen));
+            int xStrLen = binaryReader.ReadInt32();
+            string xStr = new string(binaryReader.ReadChars(xStrLen));
+            x = float.Parse(xStr);
+            int zStrLen = binaryReader.ReadInt32();
+            string zStr = new string(binaryReader.ReadChars(zStrLen));
+            z = float.Parse(zStr);
+
+            return this;
+        }
+    }
+
+    public class MsgSCOtherPlayer: MsgSCBase
+    {
+        public List<string> otherPlayerName;
+        public int otherPlayerNum;
+
+        public MsgSCOtherPlayer Unmarshal(byte[] bytes)
+        {
+            memoryStream = new MemoryStream(bytes);
+            binaryReader = new BinaryReader(memoryStream);
+            short sid_cid = binaryReader.ReadInt16();
+
+            otherPlayerNum = binaryReader.ReadInt32();
+            otherPlayerName = new List<string>(otherPlayerNum);
+            int strLen = binaryReader.ReadInt32();
+            string nameDataStr = new string(binaryReader.ReadChars(strLen));
+            string[] nameDataList = Regex.Split(nameDataStr, "#");
+
+            for(int i = 0;i < otherPlayerNum;)
+            {
+                otherPlayerName.Add(nameDataList[i]);
+            }
+            return this;
         }
     }
 
