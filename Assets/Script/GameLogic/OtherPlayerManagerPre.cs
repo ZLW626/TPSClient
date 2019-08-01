@@ -4,28 +4,21 @@ using UnityEngine;
 
 public class OtherPlayerManagerPre : MonoBehaviour
 {
-    //public Dictionary<string, int> otherPlayerDict;
+    // 保存大厅中其他玩家的信息
     public List<string> otherPlayerNameList;
     public List<int> otherPlayerHpList;
     public List<int> otherPlayerLoginIDList;
-
+    // 本客户端玩家的登录号
     public int loginIDMain;
     private void Awake()
     {
-        otherPlayerNameList = new List<string>();
-        otherPlayerHpList = new List<int>();
-        otherPlayerLoginIDList = new List<int>();
         DontDestroyOnLoad(gameObject);
     }
     // Start is called before the first frame update
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        otherPlayerNameList = new List<string>();
+        otherPlayerHpList = new List<int>();
+        otherPlayerLoginIDList = new List<int>();
     }
 }

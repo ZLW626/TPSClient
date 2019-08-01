@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+// 本客户端玩家状态条
 public class PlayerStatusBarController : MonoBehaviour
 {
     [SerializeField] private Text moneyText;
@@ -22,7 +24,7 @@ public class PlayerStatusBarController : MonoBehaviour
     public int shell;
     private int hp;
 
-    // Start is called before the first frame update
+    // 初始化玩家状态显示
     void Start()
     {
         money = PlayerPrefs.GetInt("money");
@@ -30,8 +32,8 @@ public class PlayerStatusBarController : MonoBehaviour
         moneyText.text = money.ToString();
 
         ammo = PlayerPrefs.GetInt("ammo"); // ammo + currClip = 总的子弹数
-        currClip = ammo % clipStorage;
-        ammoText.text = currClip.ToString() + " \\ " + ammo.ToString();
+        
+        ammoText.text = 0 + " \\ " + ammo.ToString();
 
         grenade = PlayerPrefs.GetInt("grenade");
         grenadeText.text = grenade.ToString();
@@ -45,13 +47,6 @@ public class PlayerStatusBarController : MonoBehaviour
         hpText.text = hp.ToString();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        //Debug.Log(money);
-        //moneyText.text = Time.deltaTime.ToString();
-    }
-
     public void UpdateMoneyText(int delta)
     {
         money+= delta;
@@ -61,7 +56,6 @@ public class PlayerStatusBarController : MonoBehaviour
 
     public void UpdateAmmoText()
     {
-        //moneyText.text = currClip.ToString() + " \\ " + ammo.ToString();
         ammoText.text = currClip.ToString() + " \\ " + ammo.ToString();
         PlayerPrefs.SetInt("ammo", ammo + currClip);
     }

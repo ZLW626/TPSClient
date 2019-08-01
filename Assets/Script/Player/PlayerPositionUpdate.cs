@@ -4,6 +4,8 @@ using UnityEngine;
 using Assets.Script.Network;
 using Assets.Script.Common;
 
+
+// 该文件目前未使用
 public class PlayerPositionUpdate : MonoBehaviour
 {
     //更新玩家位置到服务器/接收其他玩家位置

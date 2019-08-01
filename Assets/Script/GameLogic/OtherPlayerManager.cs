@@ -4,13 +4,14 @@ using UnityEngine;
 using Assets.Script.Network;
 using Assets.Script.Common;
 
+// 其他玩家的管理
 public class OtherPlayerManager : MonoBehaviour
 {
-    //public Dictionary<string, PlayerController> otherPlayerDict;
-    [SerializeField] private GameObject playerPrefab;
-    private OtherPlayerManagerPre otherPlayerManagerPre;
-    public Transform[] bornPoint;
-    private GameObject playerMain;
+    [SerializeField] private GameObject playerPrefab;    // 玩家预设体
+    private OtherPlayerManagerPre otherPlayerManagerPre; // 登录场景的大厅保存的玩家信息
+    public Transform[] bornPoint;  // 玩家出生点
+    private GameObject playerMain; // 玩家登录号, 用以控制玩家出生点
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,23 +27,10 @@ public class OtherPlayerManager : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // 从预设体初始化其他玩家
     public void InitializeOtherPlayers()
     {
-        //for(int i = 0; ;++i)
-        //{
-        //    string name;
-        //    if (PlayerPrefs.HasKey("playerName" + i))
-        //        name = PlayerPrefs.GetString("playerName" + i);
-        //    else
-        //        break;
-        //}
-        int otherPlayerNum = otherPlayerManagerPre.otherPlayerNameList.Count;
+        int otherPlayerNum = otherPlayerManagerPre.otherPlayerNameList.Count; // 获取其他玩家的数量
         for (int i = 0;i < otherPlayerNum; ++i)
         {
             string currName = otherPlayerManagerPre.otherPlayerNameList[i];
@@ -63,42 +51,6 @@ public class OtherPlayerManager : MonoBehaviour
             currPlayer.GetComponent<PlayerController>().mainCameraObj.SetActive(false);
             //设置玩家姓名
             currPlayer.GetComponent<PlayerController>().playerName = currName;
-            Debug.Log("other player");
         }
-
-        //foreach(var item in otherPlayerManagerPre.otherPlayerDict)
-        //{
-        //    string name = item.Key;
-        //    int hp = item.Value;
-        //    GameObject currPlayer = 
-        //        Instantiate(playerPrefab, 
-        //        bornPoint.position, 
-        //        bornPoint.rotation);
-            
-        //}
-
-        //MsgCSAskForOtherPlayer msgAsk = new MsgCSAskForOtherPlayer();
-        //byte[] msgPacked = msgAsk.Marshal();
-        //SocketClient.netStream.Write(msgPacked, 0, msgPacked.Length);
-
-        //byte[] dataReceivedNoHead = SocketClient.RemoveDataHead();
-        //MsgSCBase msgSCBase = new UnifromUnmarshal().Unmarshal(dataReceivedNoHead);
-        //MsgSCOtherPlayer msgOtherPlayer = (MsgSCOtherPlayer)msgSCBase;
-
-        //int otherPlayerNum = msgOtherPlayer.otherPlayerNum;
-        //for(int i = 0;i < otherPlayerNum;++i)
-        //{
-        //    GameObject currPlayer = Instantiate(
-        //        playerPrefab);
-        //    otherPlayerDict.Add(
-        //        msgOtherPlayer.otherPlayerName[i],
-        //        currPlayer.GetComponent<PlayerController>());
-
-        //}
-    }
-
-    public void InitializeOnePlayer()
-    {
-
     }
 }

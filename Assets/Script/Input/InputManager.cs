@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// 输入管理
 public class InputManager : MonoBehaviour
 {
     [SerializeField] private PlayerShoot playerShoot;
@@ -16,16 +18,9 @@ public class InputManager : MonoBehaviour
     private bool isOtherPlayerOnTank = false;
     private bool isJump;
     private float waitingTime = 0f; //坦克下次射击等待时间
-
     public bool enablePlayer = true;
-
     private bool grenadeMode = false;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     void Update()
@@ -129,6 +124,7 @@ public class InputManager : MonoBehaviour
             playerMoney.BuyItems();
         }
 
+        // 鼠标右键切换提示信息
         if(Input.GetMouseButtonDown(1))
         {
             if (tipCanvas.activeSelf)
@@ -137,6 +133,12 @@ public class InputManager : MonoBehaviour
                 tipCanvas.SetActive(true);
         }
 
+        // 按下ESC键,显示鼠标
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
 
         //锁定鼠标
         Cursor.lockState = CursorLockMode.Locked;

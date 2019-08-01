@@ -12,12 +12,7 @@ public class PlayerMoney : MonoBehaviour
         playerStatusBarController = GameObject.Find("SelfPlayerStatus").GetComponent<PlayerStatusBarController>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // 一键购买所有弹药
     public void BuyItems()
     {
         if(playerStatusBarController.money > 0)

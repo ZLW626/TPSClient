@@ -10,44 +10,30 @@ using UnityEngine.SceneManagement;
 
 public class LoginOrRegister : MonoBehaviour
 {
-    //登录游戏UI控件
+    // 登录游戏UI控件
     [SerializeField] private Button loginButton;
     [SerializeField] private GameObject loginPanel;
     [SerializeField] private InputField loginNameIF;
     [SerializeField] private InputField loginPasswordIF;
 
-    //创建角色UI控件
+    // 创建角色UI控件
     [SerializeField] private Button registerButton;
     [SerializeField] private GameObject registerPanel;
     [SerializeField] private InputField registerNameIF;
     [SerializeField] private InputField registerPasswordIF;
     [SerializeField] private InputField registerPasswordIF2;
 
-    //大厅UI控件
+    // 大厅UI控件
     [SerializeField] private GameObject hallPanel;
     private OtherPlayerManagerPre otherPlayerManager;
-
-    //byte[] dataReceived;
 
     // Start is called before the first frame update
     void Start()
     {
-
         otherPlayerManager =
             GameObject.Find("OtherPlayerManagerPre").
             GetComponent<OtherPlayerManagerPre>();
-        //获取UI控件实例
-        //loginButton = GameObject.Find("LoginButton").GetComponent<Button>();
-        //loginPanel = GameObject.Find("LoginPanel");
-        //loginNameIF = GameObject.Find("LoginNameInputField").GetComponent<InputField>();
-        //loginPasswordIF = GameObject.Find("LoginPwdInputField").GetComponent<InputField>();
         loginPanel.SetActive(false);
-
-        //registerButton = GameObject.Find("RegisterButton").GetComponent<Button>();
-        //registerPanel = GameObject.Find("RegisterPanel");
-        //registerNameIF = GameObject.Find("RegisterNameInputField").GetComponent<InputField>();
-        //registerPasswordIF = GameObject.Find("RegisterPwdInputField").GetComponent<InputField>();
-        //registerPasswordIF2 = GameObject.Find("RegisterPwdInputField2").GetComponent<InputField>();
         registerPanel.SetActive(false);
     }
 
@@ -58,31 +44,23 @@ public class LoginOrRegister : MonoBehaviour
 
     public void OnLoginOKBtnClicked()
     {
-        //获取输入框的用户名和密码, 并加密密码
-        //string username = MD5Encryption(loginNameIF.text);
+        // 获取输入框的用户名和密码, 并使用MD5加密密码
         string username = loginNameIF.text;
         string password = MD5Encryption(loginPasswordIF.text);
-        //Debug.Log(username);
-        //Debug.Log(password);
 
+        // 发送登录信息
         MsgCSLogin msg = new MsgCSLogin(username, password);
-
         byte[] dataToSend = msg.Marshal();
         SocketClient.netStream.Write(dataToSend, 0, dataToSend.Length);
 
-        //byte[] dataLenReceived = new byte[4];
-        //SocketClient.netStream.Read(dataLenReceived, 0, 4);
-
-        //byte[] dataReceived = { };
+        // 接收登录确认信息
         byte[] dataReceivedNoHead = SocketClient.RemoveDataHead();
         MsgSCBase msgSCBase = new UnifromUnmarshal().Unmarshal(dataReceivedNoHead);
-
         MsgSCLoginConfirm msgConfirm = (MsgSCLoginConfirm)msgSCBase;
-        //MsgSCBase msgComfirm = new UnifromUnmarshal().Unmarshal(dataReceivedNoHead);
         int confirmCode = msgConfirm.confirm;
-        if (confirmCode >= 0)
+        if (confirmCode >= 0) // 登录成功
         {
-            Debug.Log("login successfully!" + confirmCode);
+            // 暂存玩家之前的信息
             otherPlayerManager.loginIDMain = confirmCode;
             loginPanel.SetActive(false);
             PlayerPrefs.SetInt("loginID", confirmCode);
@@ -92,18 +70,14 @@ public class LoginOrRegister : MonoBehaviour
             PlayerPrefs.SetInt("ammo", msgConfirm.ammo);
             PlayerPrefs.SetInt("grenade", msgConfirm.grenade);
             PlayerPrefs.SetInt("shell", msgConfirm.shell);
-            Debug.Log(msgConfirm.money);
 
-            //SceneManager.LoadScene("BattlefieldScene");
             hallPanel.SetActive(true);
             hallPanel.GetComponent<HallPanelController>().AddPlayerToHall(username);
-            
         }
-        else
+        else // 登录失败
         {
             loginNameIF.text = "";
             loginPasswordIF.text = "";
-            Debug.Log("login failed!");
             loginPanel.SetActive(false);
         }
             
@@ -127,13 +101,8 @@ public class LoginOrRegister : MonoBehaviour
         if(registerPasswordIF.text.Equals(registerPasswordIF2.text))
         {
             //如果一致, 获取输入框的用户名和密码,并加密密码
-            //string username = MD5Encryption(registerNameIF.text);
             string username = registerNameIF.text;
             string password = MD5Encryption(registerPasswordIF.text);
-            //string password2 = MD5Encryption(registerPasswordIF2.text);
-            //Debug.Log(username);
-            //Debug.Log(password);
-            //Debug.Log(password2);
             MsgCSRegister msg = new MsgCSRegister(username, password);
             byte[] msgPacked = msg.Marshal();
             SocketClient.netStream.Write(msgPacked, 0, msgPacked.Length);
@@ -143,7 +112,6 @@ public class LoginOrRegister : MonoBehaviour
             int comfirmCode = ((MsgSCConfirm)msgComfirm).confirm;
             if (comfirmCode == 1)
             {
-                Debug.Log("register successfully!");
                 registerPanel.SetActive(false);
             }
             else

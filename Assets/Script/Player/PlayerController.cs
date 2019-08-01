@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+// 玩家运动控制
 public class PlayerController : MonoBehaviour
 {
     //调节相机旋转的参数
@@ -34,14 +34,14 @@ public class PlayerController : MonoBehaviour
     //玩家姓名
     public string playerName;
 
-    //
-    float speedDriven = 1.5f;
+    //定时发送玩家位置
+    private float timer;
+    private float sendInterval = 0.1f;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        
         targetRotationPlayer = transform.localRotation;
         camTrans = GameObject.Find("Main Camera").transform;
         targetRotationCamera = camTrans.localRotation;
@@ -53,16 +53,11 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         //锁定鼠标
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-    private void FixedUpdate()
-    {
-
-    }
 
     public void CameraRotate(float h, float v)
     {
@@ -70,8 +65,6 @@ public class PlayerController : MonoBehaviour
         float yOldAng = transform.eulerAngles.y;
 
         //获取鼠标移动
-        //float hMouse = Input.GetAxis("Mouse X") * mouseSensitivity;
-        //float vMouse = Input.GetAxis("Mouse Y") * mouseSensitivity;
         float hMouse = h * mouseSensitivity;
         float vMouse = v * mouseSensitivity;
         //计算玩家和相机需要旋转的角度
@@ -182,15 +175,15 @@ public class PlayerController : MonoBehaviour
             return true;
     }
 
-    public void PlayerMoveDrivenByServer(float x, float z)
-    {
-        Vector3 targetPos = new Vector3(x, transform.position.y, z);
-        transform.position = Vector3.MoveTowards(transform.position, targetPos, speedDriven * Time.deltaTime);
-    }
-
+    // 定时向服务器发送玩家位置朝向
     void SendPlayerTransform()
     {
+        timer += Time.deltaTime;
+        if( timer > sendInterval)
+        {
 
+        }
+           
     }
     
 }

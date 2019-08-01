@@ -4,12 +4,11 @@ using UnityEngine;
 using Assets.Script.Network;
 using Assets.Script.Common;
 
+
+// 玩家射击
 public class PlayerShoot : MonoBehaviour
 {
-    //连射机枪
-    //private float timeBetweenBulltets = 0.1f;
-    //private float timer = 0f;
-
+    // 射线检测
     private Ray shootRay;
     private RaycastHit hitPoint;
     private int shootableMask;
@@ -21,7 +20,7 @@ public class PlayerShoot : MonoBehaviour
     [SerializeField] public GameObject shootAim;
     [SerializeField] private Rigidbody grenadeRigibodyPrefab;
     [SerializeField] private Transform grenadeTransform;
-    private float throwForce = 8f;
+    private float throwForce = 8f; // 手榴弹初始速度
 
     [SerializeField] private Camera playerCamera;
     [SerializeField] private PlayerStatusBarController playerStatusBarController;
@@ -42,24 +41,18 @@ public class PlayerShoot : MonoBehaviour
         shootAim.SetActive(true);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
+    // 手枪和机枪
     public void Shoot()
     {
-        //if(Input.GetButtonDown("Fire1"))
-        //{
-        //弹夹里没有子弹,请先换弹夹
-        //Debug.Log(playerStatusBarController.currClip);
+        // 弹夹里没有子弹,请先换弹夹
         if (playerStatusBarController.currClip <= 0)
             return;
         playerAnimation.Shoot(true);
         playerStatusBarController.currClip -= 1;
         playerStatusBarController.UpdateAmmoText();
 
+        // 计算击中点
         shootRay.origin = playerCamera.transform.position;
         Vector3 shootDirScreen = new Vector3(
             Screen.width / 2f,
@@ -68,6 +61,7 @@ public class PlayerShoot : MonoBehaviour
         Vector3 shootDir = playerCamera.ScreenToWorldPoint(shootDirScreen);
         shootRay.direction = playerCamera.transform.forward;
 
+        // 判断是否击中敌人
         if (Physics.Raycast(shootRay, out hitPoint, 200, shootableMask))
         {
             EnemyHealth enemyHealth =
@@ -76,7 +70,7 @@ public class PlayerShoot : MonoBehaviour
             bulletParticles.Play();
             if (enemyHealth != null)
             {
-                //发送玩家击中敌人的信息到服务器
+                //发送玩家击中敌人的信息到服务器进行判断
                 int damage = 10;
                 EnemyController enemyController =
                     hitPoint.collider.GetComponent<EnemyController>();
@@ -87,15 +81,11 @@ public class PlayerShoot : MonoBehaviour
                     byte[] dataToSend = msg.Marshal();
                     SocketClient.netStream.Write(dataToSend, 0, dataToSend.Length);
                 }
-
-                //根据枪类型选择不同的伤害
-                //enemyHealth.TakeDamage(damage);
             }
         }
-
-        //}
     }
 
+    // 手榴弹
     public void ThrowGrenade()
     {
         if (playerStatusBarController.grenade <= 0)
@@ -108,6 +98,7 @@ public class PlayerShoot : MonoBehaviour
         playerStatusBarController.UpdateGrenadeText();
     }
 
+    
     public void ChangeGun()
     {
         if (handGun.activeSelf)
@@ -121,6 +112,7 @@ public class PlayerShoot : MonoBehaviour
             infantry.SetActive(true);
     }
 
+    // 换弹夹
     public void ChangeClip()
     {
         if (playerStatusBarController.currClip > 0 || playerStatusBarController.ammo <= 0)

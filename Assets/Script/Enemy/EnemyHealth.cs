@@ -7,34 +7,34 @@ using Assets.Script.Common;
 
 public class EnemyHealth : MonoBehaviour
 {
-    public int enemyID;
+    public int enemyID; 
     private bool isDead = false;
     public int health;
+
+    // 敌人血条UI
     private Slider slider;
     private Image hpImage;
     private Text hpText;
-    //private PlayerMoney playerMoney;
-    private int enemyVal = 10;
     [SerializeField] private HealthBarController healthBarController;
+
+    // 敌人所值金币
+    private int enemyVal = 10;
+
     private EnemyAnimation enemyAnimation;
-    private PlayerStatusBarController playerStatusBarController;//GameObject Find
     private EnemyController enemyController;
+
+    private PlayerStatusBarController playerStatusBarController;
+
     // Start is called before the first frame update
     void Start()
     {
         playerStatusBarController = GameObject.Find("SelfPlayerStatus").GetComponent<PlayerStatusBarController>();
-        //playerMoney = GameObject.Find("Player").GetComponent<PlayerMoney>();
         enemyAnimation = GetComponent<EnemyAnimation>();
         enemyController = GetComponent<EnemyController>();
         isDead = false;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // 敌人承受伤害
     public void TakeDamage(int damage)
     {
         health -= damage;
@@ -47,7 +47,6 @@ public class EnemyHealth : MonoBehaviour
 
             //增加玩家金钱
             playerStatusBarController.UpdateMoneyText(enemyVal);
-
             
             //发送敌人死亡信息到服务器
             Debug.Log("enemy die");
@@ -56,17 +55,6 @@ public class EnemyHealth : MonoBehaviour
             SocketClient.netStream.Write(msgPacked, 0, msgPacked.Length);
 
             Destroy(gameObject, 2f);
-
-            //Debug.Log(playerStatusBarController.money);
-            
-            //playerStatusBarController.money += enemyVal;
-            //Debug.Log(playerStatusBarController.money);
-            //playerStatusBarController.UpdateMoneyText();
-
-            //playerMoney.AddMoney(enemyVal);
         }
-        
-            
-
     }
 }

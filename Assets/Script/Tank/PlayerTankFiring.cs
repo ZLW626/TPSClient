@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// 坦克射击管理
 public class PlayerTankFiring : MonoBehaviour
 {
     [SerializeField] private Rigidbody shellRigibodyPrefab;
@@ -9,7 +11,6 @@ public class PlayerTankFiring : MonoBehaviour
     private PlayerTankController playerTankController;
     private float fireForce = 12f;
     private float cdTime = 3f;
-    //private float waitingTime = 0f;
 
     [SerializeField] private GameObject cdBar;
     private TankFireCDBarController tankFireCDBarController;
@@ -23,21 +24,10 @@ public class PlayerTankFiring : MonoBehaviour
         cdBar.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
-    {    
-        //TankFire();
-    }
 
+    // 坦克射击, 具有CD时间
     public void TankFire(ref float waitingTime)
     {
-        //waitingTime += Time.deltaTime;
-        //Debug.Log("waiting :" + waitingTime);
-        //if(waitingTime >= cdTime)
-        //{
-        //    cdBar.SetActive(false);
-        //}
-        //if (Input.GetButtonDown("Fire1") && playerTankController.hasPlayer && waitingTime >= cdTime)
         if (waitingTime >= cdTime && playerStatusBarController.shell > 0)
         {
             Debug.Log("Fire2");
@@ -47,10 +37,7 @@ public class PlayerTankFiring : MonoBehaviour
             shellRigidbody.velocity = fireTransform.forward * fireForce;
             waitingTime = 0f;
             cdBar.SetActive(true);
-            //float v1 = tankFireCDBarController.slider.value;
-            //float v2 = tankFireCDBarController.cdBarBkg.fillAmount;
-            //Debug.Log("slider :" + v1);
-            //Debug.Log("cdBarBkg :" + v2);
+
             tankFireCDBarController.slider.value = 0f;
             tankFireCDBarController.cdBarBkg.fillAmount = 0f;
             playerStatusBarController.UpdateShellText();

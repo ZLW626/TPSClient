@@ -1,7 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Assets.Script.Network;
+using Assets.Script.Common;
 
+// 坦克炮弹控制
 public class ShellController : MonoBehaviour
 {
     private LayerMask shootableLayer;
@@ -16,12 +19,6 @@ public class ShellController : MonoBehaviour
         shootableLayer = LayerMask.GetMask("Shootable");
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         Collider[] colliders = Physics.OverlapSphere(
@@ -31,17 +28,29 @@ public class ShellController : MonoBehaviour
         for (int i = 0; i < colliders.Length; ++i)
         {
             EnemyHealth currEnemyHealth = colliders[i].GetComponent<EnemyHealth>();
-            //Rigidbody currRigibody = colliders[i].GetComponent<Rigidbody>();
+            if(currEnemyHealth != null)
+            {
+                int damage = 10;
+                EnemyController enemyController =
+                    colliders[i].GetComponent<EnemyController>();
+                if (enemyController != null)
+                {
+                    MsgCSEnemyTakeDamage msg =
+                        new MsgCSEnemyTakeDamage(enemyController.enemyID);
+                    byte[] dataToSend = msg.Marshal();
+                    SocketClient.netStream.Write(dataToSend, 0, dataToSend.Length);
+                }
+            }
+
             if (!currEnemyHealth)
                 continue;
-            int damage = 20;
-            currEnemyHealth.TakeDamage(damage);
+            //int damage = 20;
+            //currEnemyHealth.TakeDamage(damage);
             //Debug.Log("shell");
 
         }
         explodeParticles.transform.position  = transform.position;
         explodeParticles.Play();
-        //Destroy(explodeParticles.gameObject, explodeParticles.main.duration);
         Destroy(gameObject);
     }
 }

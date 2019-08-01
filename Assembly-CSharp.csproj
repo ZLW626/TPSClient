@@ -87,9 +87,7 @@
     <Compile Include="Assets\Script\GameLogic\OtherPlayerManager.cs" />
     <Compile Include="Assets\Script\GameLogic\OtherPlayerManagerPre.cs" />
     <Compile Include="Assets\Script\Generate01Map.cs" />
-    <Compile Include="Assets\Script\Header.cs" />
     <Compile Include="Assets\Script\Input\InputManager.cs" />
-    <Compile Include="Assets\Script\NetStream.cs" />
     <Compile Include="Assets\Script\Network\SocketClient.cs" />
     <Compile Include="Assets\Script\Player\GrenadeController.cs" />
     <Compile Include="Assets\Script\Player\PlayerAnimation.cs" />
@@ -102,7 +100,6 @@
     <Compile Include="Assets\Script\Tank\PlayerTankController.cs" />
     <Compile Include="Assets\Script\Tank\PlayerTankFiring.cs" />
     <Compile Include="Assets\Script\Tank\ShellController.cs" />
-    <Compile Include="Assets\Script\TestNetwork.cs" />
     <Compile Include="Assets\Script\UI\HealthBarController.cs" />
     <Compile Include="Assets\Script\UI\TankFireCDBarController.cs" />
     <Compile Include="Assets\Simple Health Bar\_Asteroids Example\Scripts\AsteroidController.cs" />

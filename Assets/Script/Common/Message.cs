@@ -10,23 +10,24 @@ using System.Text.RegularExpressions;
 
 namespace Assets.Script.Common
 {
+    
     public class UniParam
     {
-        public char type; //'s': str; 'i': int; 'c': short
+        public char type; //'s': str; 'i': int; 
         public string strVal;
         public int intVal;
         public short shortVal;
     }
+
 
     public class EnemyData
     {
         public int enemyID;
         public int enemyType;
         public int bornPointID;
-        //public int x;
-        //public int y;
     }
 
+    // 客户端发送消息基类
     public class MsgCSBase
     {
         //private ArrayList paramters = new ArrayList();
@@ -84,6 +85,7 @@ namespace Assets.Script.Common
         }
     }
     
+    // 客户端发送的登录消息
     public class MsgCSLogin : MsgCSBase
     {
         public MsgCSLogin(string name, string password)
@@ -132,6 +134,7 @@ namespace Assets.Script.Common
         //}
     }
 
+    // 客户端发送的注册消息
     public class MsgCSRegister:MsgCSBase
     {
         public MsgCSRegister(string name, string password)
@@ -153,6 +156,7 @@ namespace Assets.Script.Common
         //}
     }
 
+    // 客户端请求敌人初始位置消息
     public class MsgCSAskForEnemies: MsgCSBase
     {
         public MsgCSAskForEnemies(int roundNum)
@@ -165,6 +169,7 @@ namespace Assets.Script.Common
         }
     }
 
+    // 客户端请求一个敌人的位置
     public class MsgCSAskForEnemyPosition: MsgCSBase
     {
         public MsgCSAskForEnemyPosition(int enemyID)
@@ -177,6 +182,7 @@ namespace Assets.Script.Common
         }
     }
 
+    // 告知服务器敌人死亡----------------------
     public class MsgCSEnemyDeath: MsgCSBase
     {
         public MsgCSEnemyDeath(int enemyID)
@@ -188,6 +194,7 @@ namespace Assets.Script.Common
         }
     }
 
+    // 告知服务器敌人受到攻击
     public class MsgCSEnemyTakeDamage:MsgCSBase
     {
         public MsgCSEnemyTakeDamage(int enemyID)
@@ -199,6 +206,7 @@ namespace Assets.Script.Common
         }
     }
 
+    // 发送游戏结束后的玩家状态
     public class MsgCSSavePlayer: MsgCSBase
     {
         public MsgCSSavePlayer(string name, 
@@ -221,6 +229,7 @@ namespace Assets.Script.Common
         }
     }
 
+    // 发送玩家位置
     public class MsgCSPlayerPosition: MsgCSBase
     {
         public MsgCSPlayerPosition(float x, float z)
@@ -238,6 +247,7 @@ namespace Assets.Script.Common
         }
     }
 
+    // 请求其他玩家位置
     public class MsgCSAskForOtherPlayer: MsgCSBase
     {
         public MsgCSAskForOtherPlayer()
@@ -249,6 +259,7 @@ namespace Assets.Script.Common
         }
     }
 
+    // 请求开始游戏
     public class MsgCSStartGame: MsgCSBase
     {
         public MsgCSStartGame()
@@ -260,6 +271,7 @@ namespace Assets.Script.Common
         }
     }
 
+    // 客户端接收消息基类
     public class MsgSCBase
     {
         public int sid;
@@ -275,6 +287,7 @@ namespace Assets.Script.Common
         }
     }
 
+    // 服务器发送的一般确认消息
     public class MsgSCConfirm : MsgSCBase
     {
         public int confirm;
@@ -295,6 +308,7 @@ namespace Assets.Script.Common
         }
     }
 
+    // 服务器发送的敌人初始位置消息
     public class MsgSCEnemyInitialize: MsgSCBase
     {
         public List<EnemyData> enemies;
@@ -327,6 +341,7 @@ namespace Assets.Script.Common
         }
     }
 
+    // 服务器发送的一个敌人的初始位置
     public class MsgSCEnemyPosition: MsgSCBase
     {
         public int enemy_id;
@@ -347,6 +362,7 @@ namespace Assets.Script.Common
         }
     }
 
+    // 服务器广播玩家位置消息
     public class MsgSCBroadcastPlayerPosition: MsgSCBase
     {
         public string playerName;
@@ -371,6 +387,7 @@ namespace Assets.Script.Common
         }
     }
 
+    // 接收服务器发来的其他玩家信息
     public class MsgSCOtherPlayer: MsgSCBase
     {
         public string otherPlayerName;
@@ -391,6 +408,7 @@ namespace Assets.Script.Common
         }
     }
 
+    // 接收服务器发来的登录确认信息
     public class MsgSCLoginConfirm :MsgSCBase
     {
         public int confirm; 
@@ -421,6 +439,7 @@ namespace Assets.Script.Common
         }
     }
 
+    // 接收服务器发来的本回合结束消息
     public class MsgSCRoundEnd: MsgSCBase
     {
         public int round;
@@ -436,6 +455,7 @@ namespace Assets.Script.Common
         }
     }
 
+    // 接收服务器发来的敌人受伤消息
     public class MsgSCEnemyTakeDamage: MsgSCBase
     {
         public int enemyID;
@@ -451,6 +471,7 @@ namespace Assets.Script.Common
         }
     }
 
+    // 接收服务器发来的大厅玩家信息
     public class MsgSCPlayerInfoInHall: MsgSCBase
     {
         public string name;
@@ -470,18 +491,13 @@ namespace Assets.Script.Common
         }
     }
 
+    // 统一解析服务器发送的消息,根据协议号交给相应的消息接收类处理
     public class UnifromUnmarshal//可以改成单例模式
     {
-        //protected MemoryStream memoryStream;
-        //protected BinaryReader binaryReader;
-
         public MsgSCBase Unmarshal(byte[] bytes)
         {
+            // 根据协议号分发消息进行解析
             MsgSCBase msgSCBase = null;
-            //memoryStream = new MemoryStream(bytes);
-            //binaryReader = new BinaryReader(memoryStream);
-            ///int dataLen = binaryReader.ReadInt32();
-            //short sid_cid = binaryReader.ReadInt16();
             short sid_cid = ConvertBytesToInt16(bytes);
             switch(sid_cid)
             {
@@ -490,13 +506,9 @@ namespace Assets.Script.Common
                     break;
                 case 0x2001:
                     msgSCBase = new MsgSCConfirm().Unmarshal(bytes);
-                    //msgSCBase.sid = sid_cid >> 8;
-                    //msgSCBase.cid = sid_cid & 0x00FF;
                     break;
                 case 0x3002:
                     msgSCBase = new MsgSCEnemyInitialize().Unmarshal(bytes);
-                    //msgSCBase.sid = sid_cid >> 8;
-                    //msgSCBase.cid = sid_cid & 0x00FF;
                     break;
                 case 0x1003:
                     msgSCBase = new MsgSCLoginConfirm().Unmarshal(bytes);
@@ -521,6 +533,7 @@ namespace Assets.Script.Common
             return msgSCBase;
         }
 
+        
         private short ConvertBytesToInt16(byte[] bytes)
         {
             return (short)(bytes[0] & 0xff | ((bytes[1] & 0xff) << 8));

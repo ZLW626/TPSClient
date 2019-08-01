@@ -12,18 +12,14 @@ public class EnemyAnimation : MonoBehaviour
         playerAnimator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // 敌人受击动画
     public void TakeDamage(int health)
     {
         playerAnimator.SetInteger("hp", health);
         playerAnimator.SetTrigger("damage");
     }
 
+    // 敌人射击动画
     public void Shoot()
     {
         playerAnimator.SetTrigger("shoot");

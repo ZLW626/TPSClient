@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+// 一个通用的血条
 public class HealthBarController : MonoBehaviour
 {
     private int maxHpVal = 100;
@@ -12,7 +14,6 @@ public class HealthBarController : MonoBehaviour
     public Text hpValText;
     public Text otherPlayerName;
 
-    //private PlayerController playerController;
     private InputManager inputManager;
     private GameObject playerCamera;
     private GameObject tankCamera;
@@ -25,7 +26,6 @@ public class HealthBarController : MonoBehaviour
         hpBarBkg.fillAmount = slider.value;
         hpValText.text = "HP: " + maxHpVal;
 
-        //playerController = GameObject.Find("Player").GetComponent<PlayerController>();
         inputManager = GameObject.Find("InputManager").GetComponent<InputManager>();
         playerCamera = GameObject.Find("Main Camera");
         tankCamera = GameObject.Find("TankCamera");
@@ -34,10 +34,6 @@ public class HealthBarController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (playerController.isInTank)//坦克模式
-        //    transform.rotation = tankCamera.transform.rotation;
-        //else
-        //    transform.rotation = playerCamera.transform.rotation;
         if (inputManager.isOnTank)//坦克模式
             transform.rotation = tankCamera.transform.rotation;
         else
@@ -53,7 +49,6 @@ public class HealthBarController : MonoBehaviour
             currHpVal = maxHpVal;
         else if (currHpVal < 0)
             currHpVal = 0;
-        //Debug.Log(currHpVal);
         slider.value = currHpVal / (float)maxHpVal;
         hpBarBkg.fillAmount = slider.value;
         hpValText.text = "HP: " + currHpVal.ToString();
@@ -66,7 +61,6 @@ public class HealthBarController : MonoBehaviour
             currHpVal = maxHpVal;
         else if (currHpVal < 0)
             currHpVal = 0;
-        //Debug.Log(currHpVal);
         slider.value = currHpVal / (float)maxHpVal;
         hpBarBkg.fillAmount = slider.value;
         hpValText.text = "HP: " + currHpVal.ToString();

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
+// 坦克CD UI控制
 public class TankFireCDBarController : MonoBehaviour
 {
     private float cdTime = 3f;
@@ -30,7 +30,6 @@ public class TankFireCDBarController : MonoBehaviour
     {
         waitingTime += Time.deltaTime;
         slider.value = waitingTime / cdTime;
-        //Debug.Log(waitingTime);
         cdBarBkg.fillAmount = slider.value;
         if (waitingTime >= cdTime)
         {

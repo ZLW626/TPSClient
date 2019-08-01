@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+
+// 用以将场景地图 01栅格化
 public class Generate01Map : MonoBehaviour
 {
     private Vector3 origin;
@@ -61,10 +63,5 @@ public class Generate01Map : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
 

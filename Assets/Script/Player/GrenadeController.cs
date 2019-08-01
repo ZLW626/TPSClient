@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Assets.Script.Network;
+using Assets.Script.Common;
 
+// 手雷控制
 public class GrenadeController : MonoBehaviour
 {
     private LayerMask shootableLayer;
-    private float explodeRadius = 5f;
-    private ParticleSystem explodeParticles;
+    private float explodeRadius = 5f;        // 爆炸半径
+    private ParticleSystem explodeParticles; // 爆炸粒子特效
 
     // Start is called before the first frame update
     void Start()
@@ -14,12 +17,6 @@ public class GrenadeController : MonoBehaviour
         Destroy(gameObject, 2f);
         explodeParticles = GameObject.Find("ShellExplosion").GetComponent<ParticleSystem>();
         shootableLayer = LayerMask.GetMask("Shootable");
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     private void OnTriggerEnter(Collider other)
@@ -31,17 +28,26 @@ public class GrenadeController : MonoBehaviour
         for (int i = 0; i < colliders.Length; ++i)
         {
             EnemyHealth currEnemyHealth = colliders[i].GetComponent<EnemyHealth>();
-            //Rigidbody currRigibody = colliders[i].GetComponent<Rigidbody>();
-            if (!currEnemyHealth)
-                continue;
-            int damage = 20;
-            currEnemyHealth.TakeDamage(damage);
-            Debug.Log("shell");
+            if (currEnemyHealth != null)
+            {
+                int damage = 10;
+                EnemyController enemyController =
+                    colliders[i].GetComponent<EnemyController>();
+                if (enemyController != null)
+                {
+                    MsgCSEnemyTakeDamage msg =
+                        new MsgCSEnemyTakeDamage(enemyController.enemyID);
+                    byte[] dataToSend = msg.Marshal();
+                    SocketClient.netStream.Write(dataToSend, 0, dataToSend.Length);
+                }
+            }
+                
+            ////int damage = 20;
+            //currEnemyHealth.TakeDamage(damage);
 
         }
         explodeParticles.transform.position = transform.position;
         explodeParticles.Play();
-        //Destroy(explodeParticles.gameObject, explodeParticles.main.duration);
         Destroy(gameObject);
     }
 }
