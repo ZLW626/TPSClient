@@ -13,11 +13,13 @@ public class EnemyController : MonoBehaviour
     private Vector3 targetPos;
     private float speed = 1.5f;
     private float disThreshold = 0.1f;
+    private EnemyHealth enemyHealth;
     
     // Start is called before the first frame update
     void Start()
     {
         targetPos = transform.position;
+        enemyHealth = GetComponent<EnemyHealth>();
     }
 
     // Update is called once per frame
@@ -25,7 +27,8 @@ public class EnemyController : MonoBehaviour
     {
         //timer += Time.deltaTime;
         //if(timer >= requestInterval)
-        EnemeyMove();
+        if(enemyHealth.health > 0)
+            EnemeyMove();
     }
 
     void EnemeyMove()
@@ -36,12 +39,12 @@ public class EnemyController : MonoBehaviour
             byte[] msgPacked = msgAsk.Marshal();
             SocketClient.netStream.Write(msgPacked, 0, msgPacked.Length);
 
-            byte[] dataReceivedNoHead = SocketClient.RemoveDataHead();
-            MsgSCEnemyPosition msgEnemyPosition = (MsgSCEnemyPosition)
-                (new UnifromUnmarshal().Unmarshal(dataReceivedNoHead));
+            //byte[] dataReceivedNoHead = SocketClient.RemoveDataHead();
+            //MsgSCEnemyPosition msgEnemyPosition = (MsgSCEnemyPosition)
+            //    (new UnifromUnmarshal().Unmarshal(dataReceivedNoHead));
 
-            targetPos.x = msgEnemyPosition.x;
-            targetPos.z = msgEnemyPosition.z;
+            //targetPos.x = msgEnemyPosition.x;
+            //targetPos.z = msgEnemyPosition.z;
         }
 
         transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
@@ -56,5 +59,17 @@ public class EnemyController : MonoBehaviour
     bool IsSamePoint(Vector3 p1, Vector3 p2)
     {
         return Vector3.Distance(p1, p2) < disThreshold;
+    }
+    
+
+    public void UpdateTargetPos(float x, float z)
+    {
+        Debug.Log("UpdateTargetPos");
+        //byte[] dataReceivedNoHead = SocketClient.RemoveDataHead();
+        //MsgSCEnemyPosition msgEnemyPosition = (MsgSCEnemyPosition)
+        //    (new UnifromUnmarshal().Unmarshal(dataReceivedNoHead));
+
+        targetPos.x = x;
+        targetPos.z = z;
     }
 }

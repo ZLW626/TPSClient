@@ -7,12 +7,15 @@ public class PlayerHealth : MonoBehaviour
     // Start is called before the first frame update
     public int health;
     //public RectTransform rect;
-    public PlayerStatusBarController playerStatusBarController;
+    public PlayerStatusBarController selfPlayerStatusBarController;
+    public GameObject otherPlayerStatusBar;
+
     
     void Start()
     {
-        playerStatusBarController = GameObject.Find("SelfPlayerStatus").
+        selfPlayerStatusBarController = GameObject.Find("SelfPlayerStatus").
             GetComponent<PlayerStatusBarController>();
+        otherPlayerStatusBar.SetActive(false);
     }
 
     // Update is called once per frame
@@ -24,7 +27,7 @@ public class PlayerHealth : MonoBehaviour
     void TakeDamageSingleShoot(int damage)
     {
         health -= damage;
-        //PlayerPrefs.SetInt("hp", health);
-        playerStatusBarController.SetHpBar(health);
+        PlayerPrefs.SetInt("hp", health);
+        selfPlayerStatusBarController.SetHpBar(health);
     }
 }

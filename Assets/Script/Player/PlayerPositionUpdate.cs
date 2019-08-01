@@ -57,8 +57,8 @@ public class PlayerPositionUpdate : MonoBehaviour
         MsgSCBroadcastPlayerPosition msgPos = 
             (MsgSCBroadcastPlayerPosition)msgSCBase;
 
-        otherPlayerManager.
-            otherPlayerDict[msgPos.playerName].
-            PlayerMoveDrivenByServer(msgPos.x, msgPos.z);
+        //otherPlayerManager.
+        //    otherPlayerDict[msgPos.playerName].
+        //    PlayerMoveDrivenByServer(msgPos.x, msgPos.z);
     }
 }

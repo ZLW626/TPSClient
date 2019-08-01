@@ -81,9 +81,11 @@
     <Compile Include="Assets\Script\Enemy\EnemyHealth.cs" />
     <Compile Include="Assets\Script\Enemy\EnemyManager.cs" />
     <Compile Include="Assets\Script\GameLogic\GameManager.cs" />
+    <Compile Include="Assets\Script\GameLogic\HallPanelController.cs" />
     <Compile Include="Assets\Script\GameLogic\LoginOrRegister.cs" />
     <Compile Include="Assets\Script\GameLogic\MessageManager.cs" />
     <Compile Include="Assets\Script\GameLogic\OtherPlayerManager.cs" />
+    <Compile Include="Assets\Script\GameLogic\OtherPlayerManagerPre.cs" />
     <Compile Include="Assets\Script\Generate01Map.cs" />
     <Compile Include="Assets\Script\Header.cs" />
     <Compile Include="Assets\Script\Input\InputManager.cs" />

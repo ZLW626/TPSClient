@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class PlayerMoney : MonoBehaviour
 {
-    public int money;
+    private PlayerStatusBarController playerStatusBarController;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        playerStatusBarController = GameObject.Find("SelfPlayerStatus").GetComponent<PlayerStatusBarController>();
     }
 
     // Update is called once per frame
@@ -17,8 +18,18 @@ public class PlayerMoney : MonoBehaviour
         
     }
 
-    public void AddMoney(int val)
+    public void BuyItems()
     {
-        money += val;
+        if(playerStatusBarController.money > 0)
+        {
+            //playerStatusBarController.money -= 10;
+            playerStatusBarController.UpdateMoneyText(-10);
+            playerStatusBarController.ammo += 40;
+            playerStatusBarController.UpdateAmmoText();
+            playerStatusBarController.grenade += 10;
+            playerStatusBarController.UpdateGrenadeText();
+            playerStatusBarController.shell += 5;
+            playerStatusBarController.UpdateShellText();
+        }
     }
 }

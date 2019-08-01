@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Assets.Script.Network;
+using Assets.Script.Common;
 
 public class PlayerShoot : MonoBehaviour
 {
@@ -15,6 +17,8 @@ public class PlayerShoot : MonoBehaviour
 
     [SerializeField] private GameObject handGun;
     [SerializeField] private GameObject infantry;
+    [SerializeField] public GameObject grenadeAim;
+    [SerializeField] public GameObject shootAim;
     [SerializeField] private Rigidbody grenadeRigibodyPrefab;
     [SerializeField] private Transform grenadeTransform;
     private float throwForce = 8f;
@@ -28,10 +32,14 @@ public class PlayerShoot : MonoBehaviour
     {
         bulletParticles = 
             GameObject.Find("BulletParticles").GetComponent<ParticleSystem>();
+
         shootableMask = LayerMask.GetMask("Shootable");
 
         handGun.SetActive(true);
         infantry.SetActive(false);
+        grenadeAim.SetActive(false);
+        shootAim = GameObject.Find("PlayerAimCanvas");
+        shootAim.SetActive(true);
     }
 
     // Update is called once per frame
@@ -70,8 +78,18 @@ public class PlayerShoot : MonoBehaviour
             {
                 //发送玩家击中敌人的信息到服务器
                 int damage = 10;
+                EnemyController enemyController =
+                    hitPoint.collider.GetComponent<EnemyController>();
+                if(enemyController != null)
+                {
+                    MsgCSEnemyTakeDamage msg = 
+                        new MsgCSEnemyTakeDamage(enemyController.enemyID);
+                    byte[] dataToSend = msg.Marshal();
+                    SocketClient.netStream.Write(dataToSend, 0, dataToSend.Length);
+                }
+
                 //根据枪类型选择不同的伤害
-                enemyHealth.TakeDamage(damage);
+                //enemyHealth.TakeDamage(damage);
             }
         }
 
@@ -80,16 +98,14 @@ public class PlayerShoot : MonoBehaviour
 
     public void ThrowGrenade()
     {
-        Debug.Log(playerStatusBarController.shell);
-        //if (playerStatusBarController.shell <= 0)
-        //    return;
-        Debug.Log(playerStatusBarController.shell);
+        if (playerStatusBarController.grenade <= 0)
+            return;
+
         Rigidbody grenadeRigidbody = Instantiate(grenadeRigibodyPrefab,
            grenadeTransform.position, grenadeTransform.rotation) as Rigidbody;
 
-        grenadeRigidbody.velocity = grenadeTransform.forward * throwForce; 
-
-
+        grenadeRigidbody.velocity = grenadeTransform.forward * throwForce;
+        playerStatusBarController.UpdateGrenadeText();
     }
 
     public void ChangeGun()

@@ -9,6 +9,8 @@ public class InputManager : MonoBehaviour
     [SerializeField] private PlayerTankController playerTankController;
     [SerializeField] private PlayerAnimation playerAnimation;
     [SerializeField] private PlayerTankFiring playerTankFiring;
+    [SerializeField] private PlayerMoney playerMoney;
+    [SerializeField] private GameObject tipCanvas;
 
     public bool isOnTank = false;
     private bool isOtherPlayerOnTank = false;
@@ -59,9 +61,16 @@ public class InputManager : MonoBehaviour
             {
                 Debug.Log("Fire1");
                 if (!grenadeMode)
+                {
+                    
                     playerShoot.Shoot();
+                }    
                 else
+                {
+                    
                     playerShoot.ThrowGrenade();
+                }
+                    
                 
             }
         }
@@ -84,6 +93,7 @@ public class InputManager : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.G))
         {
             grenadeMode = !grenadeMode;
+            playerShoot.grenadeAim.SetActive(grenadeMode);
         }
 
         //玩家上下坦克
@@ -93,6 +103,7 @@ public class InputManager : MonoBehaviour
             {
                 playerTankController.PlayerGetOffTank();
                 isOnTank = false;
+                
             }
             else
             {
@@ -103,12 +114,27 @@ public class InputManager : MonoBehaviour
                 }
                 
             }
+            playerShoot.shootAim.SetActive(!isOnTank);
         }
 
         if (Input.GetButtonDown("Jump") && !isJump)
         {
             //Debug.Log("Jump");
             isJump = true;
+        }
+
+        //玩家购物
+        if(Input.GetKeyDown(KeyCode.B))
+        {
+            playerMoney.BuyItems();
+        }
+
+        if(Input.GetMouseButtonDown(1))
+        {
+            if (tipCanvas.activeSelf)
+                tipCanvas.SetActive(false);
+            else
+                tipCanvas.SetActive(true);
         }
 
 

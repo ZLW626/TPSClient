@@ -10,6 +10,7 @@ public class HealthBarController : MonoBehaviour
     public Slider slider;
     public Image hpBarBkg;
     public Text hpValText;
+    public Text otherPlayerName;
 
     //private PlayerController playerController;
     private InputManager inputManager;
@@ -52,7 +53,20 @@ public class HealthBarController : MonoBehaviour
             currHpVal = maxHpVal;
         else if (currHpVal < 0)
             currHpVal = 0;
-        Debug.Log(currHpVal);
+        //Debug.Log(currHpVal);
+        slider.value = currHpVal / (float)maxHpVal;
+        hpBarBkg.fillAmount = slider.value;
+        hpValText.text = "HP: " + currHpVal.ToString();
+    }
+
+    public void SetHpValue(int val)
+    {
+        currHpVal = val;
+        if (currHpVal > maxHpVal)
+            currHpVal = maxHpVal;
+        else if (currHpVal < 0)
+            currHpVal = 0;
+        //Debug.Log(currHpVal);
         slider.value = currHpVal / (float)maxHpVal;
         hpBarBkg.fillAmount = slider.value;
         hpValText.text = "HP: " + currHpVal.ToString();

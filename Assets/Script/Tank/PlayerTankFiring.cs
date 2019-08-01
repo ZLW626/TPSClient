@@ -13,9 +13,11 @@ public class PlayerTankFiring : MonoBehaviour
 
     [SerializeField] private GameObject cdBar;
     private TankFireCDBarController tankFireCDBarController;
+    private PlayerStatusBarController playerStatusBarController;
     // Start is called before the first frame update
     void Start()
     {
+        playerStatusBarController = GameObject.Find("SelfPlayerStatus").GetComponent<PlayerStatusBarController>();
         playerTankController = GetComponent<PlayerTankController>();
         tankFireCDBarController = cdBar.GetComponent<TankFireCDBarController>();
         cdBar.SetActive(false);
@@ -36,7 +38,7 @@ public class PlayerTankFiring : MonoBehaviour
         //    cdBar.SetActive(false);
         //}
         //if (Input.GetButtonDown("Fire1") && playerTankController.hasPlayer && waitingTime >= cdTime)
-        if (waitingTime >= cdTime)
+        if (waitingTime >= cdTime && playerStatusBarController.shell > 0)
         {
             Debug.Log("Fire2");
             Rigidbody shellRigidbody = Instantiate(shellRigibodyPrefab,
@@ -51,6 +53,7 @@ public class PlayerTankFiring : MonoBehaviour
             //Debug.Log("cdBarBkg :" + v2);
             tankFireCDBarController.slider.value = 0f;
             tankFireCDBarController.cdBarBkg.fillAmount = 0f;
+            playerStatusBarController.UpdateShellText();
         }
             
     }

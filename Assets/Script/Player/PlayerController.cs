@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     private Transform camTrans;
 
     //玩家上坦克
-    [SerializeField] private GameObject mainCameraObj;
+    [SerializeField] public GameObject mainCameraObj;
     [SerializeField] private GameObject tankCameraObj;
     [SerializeField] private PlayerTankController playerTankController;
     [SerializeField] private Transform realTankTrans;
@@ -188,5 +188,9 @@ public class PlayerController : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, targetPos, speedDriven * Time.deltaTime);
     }
 
+    void SendPlayerTransform()
+    {
+
+    }
     
 }

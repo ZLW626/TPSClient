@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Assets.Script.Network;
+using Assets.Script.Common;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,9 +13,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private EnemyManager enemyManager;
     [SerializeField] private OtherPlayerManager otherPlayerManager;
 
-    [SerializeField] private Text roundNumText;
-    [SerializeField] private Text countdownText;
-    [SerializeField] private InputManager inputManager;
+    [SerializeField] public Text roundNumText;
+    [SerializeField] public Text countdownText;
+    [SerializeField] public InputManager inputManager;
 
     private bool tempFlag = false;
     // Start is called before the first frame update
@@ -23,8 +25,9 @@ public class GameManager : MonoBehaviour
 
         //otherPlayerManager.InitializeOtherPlayers();
 
-
-        StartCoroutine(RoundLoop());
+        roundNumText.text = "Round 1";
+        countdownText.text = "";
+        //StartCoroutine(RoundLoop());
     }
 
     // Update is called once per frame
@@ -40,7 +43,7 @@ public class GameManager : MonoBehaviour
         countdownText.text = "";
 
         //初始化敌人
-        enemyManager.InitializeEnemies(currRound);
+        //enemyManager.InitializeEnemies(currRound);
 
         //使玩家待机
         inputManager.enablePlayer = false;
@@ -96,5 +99,40 @@ public class GameManager : MonoBehaviour
         {
             StartCoroutine(RoundLoop());
         }
+    }
+
+    private IEnumerator CountdownCore()
+    {
+        int leftSeconds = countdown;
+        while (leftSeconds >= 0)
+        {
+            countdownText.text = leftSeconds + " s!";
+            yield return new WaitForSeconds(1f);
+            leftSeconds--;
+        }
+
+        //告知服务器, 本客户端想要开始下一回合
+        MsgCSStartGame msg = new MsgCSStartGame();
+        byte[] dataToSend = msg.Marshal();
+        SocketClient.netStream.Write(dataToSend, 0, dataToSend.Length);
+    }
+
+    public void Countdown()
+    {
+        StartCoroutine(CountdownCore());
+    }
+
+    public void SavePlayer()
+    {
+        MsgCSSavePlayer msg =
+                        new MsgCSSavePlayer(
+                            PlayerPrefs.GetString("name"),
+                            PlayerPrefs.GetInt("hp"),
+                            PlayerPrefs.GetInt("money"),
+                            PlayerPrefs.GetInt("ammo"),
+                            PlayerPrefs.GetInt("grenade"),
+                            PlayerPrefs.GetInt("shell"));
+        byte[] dataToSend = msg.Marshal();
+        SocketClient.netStream.Write(dataToSend, 0, dataToSend.Length);
     }
 }

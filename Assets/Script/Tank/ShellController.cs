@@ -36,7 +36,7 @@ public class ShellController : MonoBehaviour
                 continue;
             int damage = 20;
             currEnemyHealth.TakeDamage(damage);
-            Debug.Log("shell");
+            //Debug.Log("shell");
 
         }
         explodeParticles.transform.position  = transform.position;

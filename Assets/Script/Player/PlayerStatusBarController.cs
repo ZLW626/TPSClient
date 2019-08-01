@@ -20,12 +20,13 @@ public class PlayerStatusBarController : MonoBehaviour
     public int currClip;
     public int grenade;
     public int shell;
-    public int hp;
+    private int hp;
 
     // Start is called before the first frame update
     void Start()
     {
         money = PlayerPrefs.GetInt("money");
+        Debug.Log(money);
         moneyText.text = money.ToString();
 
         ammo = PlayerPrefs.GetInt("ammo"); // ammo + currClip = 总的子弹数
@@ -47,30 +48,45 @@ public class PlayerStatusBarController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        //Debug.Log(money);
+        //moneyText.text = Time.deltaTime.ToString();
     }
 
-    public void UpdateMoneyText()
+    public void UpdateMoneyText(int delta)
     {
-        moneyText.text = money.ToString();
+        money+= delta;
+        moneyText.text = "" + money.ToString();
+        PlayerPrefs.SetInt("money", money);
     }
+
     public void UpdateAmmoText()
     {
+        //moneyText.text = currClip.ToString() + " \\ " + ammo.ToString();
         ammoText.text = currClip.ToString() + " \\ " + ammo.ToString();
+        PlayerPrefs.SetInt("ammo", ammo + currClip);
     }
 
-    public void SetGrenadeText(int val)
+    public void UpdateGrenadeText()
     {
-
+        grenade--;
+        grenadeText.text = "" + grenade.ToString();
+        PlayerPrefs.SetInt("grenade", grenade);
     }
-    public void SetShellText(int val)
+
+    public void UpdateShellText()
     {
-
+        shell--;
+        shellText.text = "" + shell.ToString();
+        PlayerPrefs.SetInt("shell", shell);
     }
+
     public void SetHpBar(int val)
     {
         slider.value = PlayerPrefs.GetInt("hp") / maxHpVal;
         hpImage.fillAmount = slider.value;
         hpText.text = val.ToString();
+
+        PlayerPrefs.SetInt("hp", hp);
     }
+
 }

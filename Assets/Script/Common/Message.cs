@@ -177,6 +177,50 @@ namespace Assets.Script.Common
         }
     }
 
+    public class MsgCSEnemyDeath: MsgCSBase
+    {
+        public MsgCSEnemyDeath(int enemyID)
+        {
+            sid_cid = Conf.MSG_CS_ENEMY_DEATH;
+            int dataLen = Conf.NET_HEAD_LENGTH_SIZE + Conf.NET_SID_CID_LENGTH_SIZE + sizeof(int);
+            appendParamInt(dataLen);
+            appendParamInt(enemyID);
+        }
+    }
+
+    public class MsgCSEnemyTakeDamage:MsgCSBase
+    {
+        public MsgCSEnemyTakeDamage(int enemyID)
+        {
+            sid_cid = Conf.MSG_CS_ENEMY_TAKE_DAMAGE;
+            int dataLen = Conf.NET_HEAD_LENGTH_SIZE + Conf.NET_SID_CID_LENGTH_SIZE + sizeof(int);
+            appendParamInt(dataLen);
+            appendParamInt(enemyID);
+        }
+    }
+
+    public class MsgCSSavePlayer: MsgCSBase
+    {
+        public MsgCSSavePlayer(string name, 
+            int hp, int money, int ammo, int grenade, int shell)
+        {
+            sid_cid = Conf.MSG_CS_SAVE_PLAYER;
+            int lenLenFlag = sizeof(int) * 1;
+
+            int dataLen = Conf.NET_HEAD_LENGTH_SIZE + Conf.NET_SID_CID_LENGTH_SIZE +
+                 lenLenFlag + name.Length + sizeof(int) * 5;
+            appendParamInt(dataLen);
+            appendParamInt(name.Length);
+            appendParamStr(name);
+            appendParamInt(hp);
+            appendParamInt(money);
+            appendParamInt(ammo);
+            appendParamInt(grenade);
+            appendParamInt(shell);
+
+        }
+    }
+
     public class MsgCSPlayerPosition: MsgCSBase
     {
         public MsgCSPlayerPosition(float x, float z)
@@ -205,10 +249,22 @@ namespace Assets.Script.Common
         }
     }
 
+    public class MsgCSStartGame: MsgCSBase
+    {
+        public MsgCSStartGame()
+        {
+            sid_cid = Conf.MSG_CS_START_GAME;
+            int dataLen = Conf.NET_HEAD_LENGTH_SIZE + Conf.NET_SID_CID_LENGTH_SIZE + sizeof(int);
+            appendParamInt(dataLen);
+            appendParamInt(1);
+        }
+    }
+
     public class MsgSCBase
     {
         public int sid;
         public int cid;
+        public short sid_cid;
         protected MemoryStream memoryStream;
         protected BinaryReader binaryReader;
 
@@ -233,7 +289,7 @@ namespace Assets.Script.Common
             memoryStream = new MemoryStream(bytes);
             binaryReader = new BinaryReader(memoryStream);
             //int dataLen = binaryReader.ReadInt32();
-            short sid_cid = binaryReader.ReadInt16();
+            sid_cid = binaryReader.ReadInt16();
             confirm = binaryReader.ReadInt32();
             return this;
         }
@@ -248,7 +304,7 @@ namespace Assets.Script.Common
         {
             memoryStream = new MemoryStream(bytes);
             binaryReader = new BinaryReader(memoryStream);
-            short sid_cid = binaryReader.ReadInt16();
+            sid_cid = binaryReader.ReadInt16();
             enemyNum = binaryReader.ReadInt32();
             enemies = new List<EnemyData>(enemyNum);
             int strLen = binaryReader.ReadInt32();
@@ -281,7 +337,7 @@ namespace Assets.Script.Common
         {
             memoryStream = new MemoryStream(bytes);
             binaryReader = new BinaryReader(memoryStream);
-            short sid_cid = binaryReader.ReadInt16();
+            sid_cid = binaryReader.ReadInt16();
             enemy_id = binaryReader.ReadInt32();
             x = binaryReader.ReadInt32();
             z = binaryReader.ReadInt32();
@@ -317,8 +373,8 @@ namespace Assets.Script.Common
 
     public class MsgSCOtherPlayer: MsgSCBase
     {
-        public List<string> otherPlayerName;
-        public int otherPlayerNum;
+        public string otherPlayerName;
+        public int hp;
 
         public MsgSCOtherPlayer Unmarshal(byte[] bytes)
         {
@@ -326,16 +382,11 @@ namespace Assets.Script.Common
             binaryReader = new BinaryReader(memoryStream);
             short sid_cid = binaryReader.ReadInt16();
 
-            otherPlayerNum = binaryReader.ReadInt32();
-            otherPlayerName = new List<string>(otherPlayerNum);
+            //otherPlayerNum = binaryReader.ReadInt32();
+            //otherPlayerName = new List<string>(otherPlayerNum);
             int strLen = binaryReader.ReadInt32();
-            string nameDataStr = new string(binaryReader.ReadChars(strLen));
-            string[] nameDataList = Regex.Split(nameDataStr, "#");
-
-            for(int i = 0;i < otherPlayerNum;)
-            {
-                otherPlayerName.Add(nameDataList[i]);
-            }
+            otherPlayerName = new string(binaryReader.ReadChars(strLen));
+            hp = binaryReader.ReadInt32();
             return this;
         }
     }
@@ -355,17 +406,66 @@ namespace Assets.Script.Common
             binaryReader = new BinaryReader(memoryStream);
             short sid_cid = binaryReader.ReadInt16();
             confirm = binaryReader.ReadInt32();
-            Debug.Log("confirm: " + confirm);
+            //Debug.Log("confirm: " + confirm);
             hp = binaryReader.ReadInt32();
             money = binaryReader.ReadInt32();
             ammo = binaryReader.ReadInt32();
             grenade = binaryReader.ReadInt32();
             shell = binaryReader.ReadInt32();
-            Debug.Log(hp);
-            Debug.Log(money);
-            Debug.Log(ammo);
-            Debug.Log(grenade);
-            Debug.Log(shell);
+            //Debug.Log(hp);
+            //Debug.Log(money);
+            //Debug.Log(ammo);
+            //Debug.Log(grenade);
+            //Debug.Log(shell);
+            return this;
+        }
+    }
+
+    public class MsgSCRoundEnd: MsgSCBase
+    {
+        public int round;
+
+        public MsgSCRoundEnd Unmarshal(byte[] bytes)
+        {
+            memoryStream = new MemoryStream(bytes);
+            binaryReader = new BinaryReader(memoryStream);
+            //int dataLen = binaryReader.ReadInt32();
+            sid_cid = binaryReader.ReadInt16();
+            round = binaryReader.ReadInt32();
+            return this;
+        }
+    }
+
+    public class MsgSCEnemyTakeDamage: MsgSCBase
+    {
+        public int enemyID;
+
+        public MsgSCEnemyTakeDamage Unmarshal(byte[] bytes)
+        {
+            memoryStream = new MemoryStream(bytes);
+            binaryReader = new BinaryReader(memoryStream);
+            //int dataLen = binaryReader.ReadInt32();
+            sid_cid = binaryReader.ReadInt16();
+            enemyID = binaryReader.ReadInt32();
+            return this;
+        }
+    }
+
+    public class MsgSCPlayerInfoInHall: MsgSCBase
+    {
+        public string name;
+        public int hp;
+        public int loginID;
+        public MsgSCPlayerInfoInHall Unmarshal(byte[] bytes)
+        {
+            memoryStream = new MemoryStream(bytes);
+            binaryReader = new BinaryReader(memoryStream);
+            sid_cid = binaryReader.ReadInt16();
+            int strLen = binaryReader.ReadInt32();
+            name = new string(binaryReader.ReadChars(strLen));
+            hp = binaryReader.ReadInt32();
+            loginID = binaryReader.ReadInt32();
+
             return this;
         }
     }
@@ -385,6 +485,9 @@ namespace Assets.Script.Common
             short sid_cid = ConvertBytesToInt16(bytes);
             switch(sid_cid)
             {
+                case 0x1006:
+                    msgSCBase = new MsgSCPlayerInfoInHall().Unmarshal(bytes);
+                    break;
                 case 0x2001:
                     msgSCBase = new MsgSCConfirm().Unmarshal(bytes);
                     //msgSCBase.sid = sid_cid >> 8;
@@ -400,6 +503,15 @@ namespace Assets.Script.Common
                     break;
                 case 0x3004:
                     msgSCBase = new MsgSCEnemyPosition().Unmarshal(bytes);
+                    break;
+                case 0x4004:
+                    msgSCBase = new MsgSCOtherPlayer().Unmarshal(bytes);
+                    break;
+                case 0x5001:
+                    msgSCBase = new MsgSCRoundEnd().Unmarshal(bytes);
+                    break;
+                case 0x3007:
+                    msgSCBase = new MsgSCEnemyTakeDamage().Unmarshal(bytes);
                     break;
                 default:
                     return null;

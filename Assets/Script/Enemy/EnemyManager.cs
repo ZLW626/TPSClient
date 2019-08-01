@@ -9,10 +9,13 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] private Transform[] bornPoints;
     [SerializeField] private GameObject longRangePrefab;
     [SerializeField] private GameObject explodePrefab;
-
+    public List<GameObject> enemyList;
+    public Dictionary<int, GameObject> enemyDict;
     // Start is called before the first frame update
     void Start()
     {
+        enemyList = new List<GameObject>();
+        enemyDict = new Dictionary<int, GameObject>();
         //InitializeEnemies(0);
     }
 
@@ -22,18 +25,65 @@ public class EnemyManager : MonoBehaviour
         
     }
 
-    public void InitializeEnemies(int round)
+    //public void InitializeEnemies(int round)
+    //{
+    //    MsgCSAskForEnemies msgAsk = new MsgCSAskForEnemies(round);
+    //    byte[] msgPacked = msgAsk.Marshal();
+    //    SocketClient.netStream.Write(msgPacked, 0, msgPacked.Length);
+
+    //    byte[] dataReceivedNoHead = SocketClient.RemoveDataHead();
+    //    MsgSCEnemyInitialize msgEnemyData = (MsgSCEnemyInitialize)
+    //        (new UnifromUnmarshal().Unmarshal(dataReceivedNoHead));
+
+    //    int enemyNum = msgEnemyData.enemyNum;
+    //    for (int i = 0;i < enemyNum;++i)
+    //    {
+    //        int enemyID = msgEnemyData.enemies[i].enemyID;
+    //        int enemyType = msgEnemyData.enemies[i].enemyType;
+    //        GameObject currEnemy;
+    //        Debug.Log("enemy num: " + enemyNum);
+    //        Debug.Log("enemy id: " + enemyID);
+    //        if (enemyType == 0)//实例化一个远程敌人
+    //            currEnemy = GameObject.Instantiate(
+    //                longRangePrefab,
+    //                bornPoints[enemyID].position,
+    //                bornPoints[enemyID].rotation);
+    //        else//实例化一个爆炸敌人
+    //            currEnemy = GameObject.Instantiate(
+    //                    explodePrefab,
+    //                    bornPoints[enemyID].position,
+    //                    bornPoints[enemyID].rotation);
+
+    //        currEnemy.GetComponent<EnemyController>().enemyID = enemyID;
+    //        //{
+    //        //    //实例化一个远程敌人
+    //        //    GameObject longRangeEnemy = GameObject.Instantiate(
+    //        //        longRangePrefab,
+    //        //        bornPoints[enemyID].position,
+    //        //        bornPoints[enemyID].rotation);
+    //        //    longRangeEnemy.GetComponent<EnemyController>().id = enemyID;
+    //        //}
+    //        //else
+    //        //{
+
+    //        //}
+    //    }
+
+    //}
+
+    public void InitializeEnemies(MsgSCEnemyInitialize msgEnemyData)
     {
-        MsgCSAskForEnemies msgAsk = new MsgCSAskForEnemies(round);
-        byte[] msgPacked = msgAsk.Marshal();
-        SocketClient.netStream.Write(msgPacked, 0, msgPacked.Length);
+        //MsgCSAskForEnemies msgAsk = new MsgCSAskForEnemies(round);
+        //byte[] msgPacked = msgAsk.Marshal();
+        //SocketClient.netStream.Write(msgPacked, 0, msgPacked.Length);
 
-        byte[] dataReceivedNoHead = SocketClient.RemoveDataHead();
-        MsgSCEnemyInitialize msgEnemyData = (MsgSCEnemyInitialize)
-            (new UnifromUnmarshal().Unmarshal(dataReceivedNoHead));
-
+        //byte[] dataReceivedNoHead = SocketClient.RemoveDataHead();
+        //MsgSCEnemyInitialize msgEnemyData = (MsgSCEnemyInitialize)
+        //    (new UnifromUnmarshal().Unmarshal(dataReceivedNoHead));
+        enemyList.Clear();
+        enemyDict.Clear();
         int enemyNum = msgEnemyData.enemyNum;
-        for (int i = 0;i < enemyNum;++i)
+        for (int i = 0; i < enemyNum; ++i)
         {
             int enemyID = msgEnemyData.enemies[i].enemyID;
             int enemyType = msgEnemyData.enemies[i].enemyType;
@@ -52,19 +102,12 @@ public class EnemyManager : MonoBehaviour
                         bornPoints[enemyID].rotation);
 
             currEnemy.GetComponent<EnemyController>().enemyID = enemyID;
-            //{
-            //    //实例化一个远程敌人
-            //    GameObject longRangeEnemy = GameObject.Instantiate(
-            //        longRangePrefab,
-            //        bornPoints[enemyID].position,
-            //        bornPoints[enemyID].rotation);
-            //    longRangeEnemy.GetComponent<EnemyController>().id = enemyID;
-            //}
-            //else
-            //{
-
-            //}
+            currEnemy.GetComponent<EnemyHealth>().enemyID = enemyID;
+            enemyList.Add(currEnemy);
+            enemyDict.Add(enemyID, currEnemy);
+            
         }
 
     }
+
 }

@@ -23,11 +23,19 @@ public class LoginOrRegister : MonoBehaviour
     [SerializeField] private InputField registerPasswordIF;
     [SerializeField] private InputField registerPasswordIF2;
 
+    //大厅UI控件
+    [SerializeField] private GameObject hallPanel;
+    private OtherPlayerManagerPre otherPlayerManager;
+
     //byte[] dataReceived;
 
     // Start is called before the first frame update
     void Start()
     {
+
+        otherPlayerManager =
+            GameObject.Find("OtherPlayerManagerPre").
+            GetComponent<OtherPlayerManagerPre>();
         //获取UI控件实例
         //loginButton = GameObject.Find("LoginButton").GetComponent<Button>();
         //loginPanel = GameObject.Find("LoginPanel");
@@ -71,19 +79,25 @@ public class LoginOrRegister : MonoBehaviour
 
         MsgSCLoginConfirm msgConfirm = (MsgSCLoginConfirm)msgSCBase;
         //MsgSCBase msgComfirm = new UnifromUnmarshal().Unmarshal(dataReceivedNoHead);
-        int comfirmCode = msgConfirm.confirm;
-        if (comfirmCode == 0)
+        int confirmCode = msgConfirm.confirm;
+        if (confirmCode >= 0)
         {
-            Debug.Log("login successfully!");
+            Debug.Log("login successfully!" + confirmCode);
+            otherPlayerManager.loginIDMain = confirmCode;
             loginPanel.SetActive(false);
+            PlayerPrefs.SetInt("loginID", confirmCode);
             PlayerPrefs.SetString("name", username);
             PlayerPrefs.SetInt("hp", msgConfirm.hp);
             PlayerPrefs.SetInt("money", msgConfirm.money);
             PlayerPrefs.SetInt("ammo", msgConfirm.ammo);
             PlayerPrefs.SetInt("grenade", msgConfirm.grenade);
-            PlayerPrefs.SetFloat("shell", msgConfirm.shell);
+            PlayerPrefs.SetInt("shell", msgConfirm.shell);
+            Debug.Log(msgConfirm.money);
 
-            SceneManager.LoadScene("BattlefieldScene");
+            //SceneManager.LoadScene("BattlefieldScene");
+            hallPanel.SetActive(true);
+            hallPanel.GetComponent<HallPanelController>().AddPlayerToHall(username);
+            
         }
         else
         {
